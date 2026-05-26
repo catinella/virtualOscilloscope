@@ -13,6 +13,11 @@
 # Description:
 #	This file must be processed with qmake6 QT tool. It will generate you the Makefile you need to build the source code
 #
+#	Customized rules:
+#		cleanall   It cleans all dinamically created files except Makefile
+#		install    It install the project's executable file in your system
+#		uninstall  It removes the file from your system
+#
 #-------------------------------------------------------------------------------------------------------------------------------
 
 QT += widgets gui
@@ -24,6 +29,8 @@ CONFIG -= app_bundle
 TEMPLATE = app
 TARGET = virtualOscilloscope
 
+PREFIX = /usr/local
+
 SOURCES += \
 	main.cpp \
 	mainWindow.cpp \
@@ -33,8 +40,16 @@ HEADERS += \
 	mainWindow.hpp \
 	plotBox.hpp
 
-cleanall.target = cleanall
-cleanall.depends = clean
+cleanall.target   = cleanall
+cleanall.depends  = clean
 cleanall.commands = rm -fv $$OUT_PWD/$$TARGET
 
-QMAKE_EXTRA_TARGETS += cleanall
+install.target   = install
+install.depends  = $$TARGET
+install.commands = install --verbose --mode 555 --own root $$TARGET $$PREFIX/bin
+
+uninstall.target   = uninstall
+uninstall.depends  = 
+uninstall.commands = rm -fv $$PREFIX/bin/$$TARGET
+
+QMAKE_EXTRA_TARGETS += cleanall install uninstall
