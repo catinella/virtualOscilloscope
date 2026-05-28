@@ -35,15 +35,6 @@
 #include <QStringList>
 #include <QDebug>
 
-QVector<QColor> channelColors = {
-    Qt::red,
-    Qt::green,
-    Qt::blue,
-    Qt::yellow,
-    Qt::cyan,
-    Qt::magenta,
-    Qt::white
-};
 //------------------------------------------------------------------------------------------------------------------------------
 //                                       P R I V A T E   F U N C T I O N S
 //------------------------------------------------------------------------------------------------------------------------------
@@ -232,6 +223,13 @@ void mainWindow::createCentralWidget() {
 	signalsList->setMinimumWidth(160);
 	signalsList->setMaximumHeight(90);
 
+	signalsList->setStyleSheet(
+		"background-color: rgb(30,30,30);"
+		"color: rgb(220,220,220);"
+		"border: 1px solid rgb(60,60,60);"
+		"selection-background-color: rgb(70,70,70);"
+	);
+
 	controlsLayout->addWidget(xScrollBar);
 	controlsLayout->addLayout(dialLayout);
 
@@ -240,7 +238,11 @@ void mainWindow::createCentralWidget() {
 
 	dialLayout->addStretch();
 
-	dialLayout->addWidget(signalsList);
+	//dialLayout->addWidget(signalsList);
+	QVBoxLayout *signalsLayout = new QVBoxLayout();
+	signalsLayout->addSpacing(30);
+	signalsLayout->addWidget(signalsList);
+	dialLayout->addLayout(signalsLayout);
 
 	dialLayout->addStretch();
 
@@ -374,8 +376,7 @@ void mainWindow::openCsv() {
 
 				for (int i = 0; i < channelNames.size(); ++i) {
 					item = new QListWidgetItem(channelNames[i]);
-					color = channelColors[i % channelColors.size()];
-					item->setForeground(color);
+					item->setForeground(channelColors[i]);
 					signalsList->addItem(item);
 				}
 			}

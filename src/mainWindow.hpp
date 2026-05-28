@@ -47,6 +47,17 @@
 
 #define CSVFIELDSPLITTER ','
 
+static const std::array<QColor, 8> channelColors = {
+	QColor(255, 255,   0),   // yellow
+	QColor(  0, 255,   0),   // lime
+	QColor(  0, 255, 255),   // cyan
+	QColor(255,   0, 255),   // magenta
+	QColor(255, 128,   0),   // orange
+	QColor(255, 255, 255),   // white
+	QColor(128, 255, 128),   // light green
+	QColor(255, 128, 128)    // light red
+};
+
 class QWidget;
 class QAction;
 

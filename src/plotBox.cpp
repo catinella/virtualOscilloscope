@@ -19,6 +19,7 @@
 #include <QLabel>
 #include <QFrame>
 #include <QPainter>
+#include <mainWindow.hpp>
 
 plotBox::plotBox(QWidget *parent) : QWidget(parent) {
 }
@@ -95,7 +96,7 @@ void plotBox::draw() {
 		if (x > 0 && dataPool[x-1].isEmpty() == false && dataPool[x].isEmpty() == false) {
 			for (int w=0; w<dataPool[x].size(); w++) {
 				color = QColor::fromHsv( (w * 60) % 360, 255, 255 );
-				painter.setPen(color);
+				painter.setPen(channelColors[w]);
 				painter.drawLine(x - 1, yZero - dataPool[x - 1][w], x, yZero - dataPool[x][w]);
 			}
 		}
