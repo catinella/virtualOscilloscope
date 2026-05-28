@@ -1,2 +1,5 @@
 .qmake.stash
 Makefile
+*.o
+moc_*
+virtualOscilloscope
