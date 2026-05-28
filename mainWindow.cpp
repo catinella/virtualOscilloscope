@@ -332,6 +332,7 @@ void mainWindow::openCsv() {
 
 			// Old data removing...
 			dataPool.clear();
+			channelNames.clear();
 			
 			while (in.atEnd() == false) {
 				rowString = in.readLine();
