@@ -15,7 +15,7 @@
 #
 #	Customized rules:
 #		cleanall   It cleans all dinamically created files except Makefile
-#		install    It install the project's executable file in your system
+#		install    It install the application executable file in your system
 #		uninstall  It removes the file from your system
 #
 #-------------------------------------------------------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ HEADERS += \
 
 cleanall.target   = cleanall
 cleanall.depends  = clean
-cleanall.commands = rm -fv $$OUT_PWD/$$TARGET
+cleanall.commands = rm -fv $$OUT_PWD/$$TARGET Makefile
 
 install.target   = install
 install.depends  = $$TARGET
