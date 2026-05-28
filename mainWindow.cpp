@@ -344,7 +344,7 @@ void mainWindow::openCsv() {
 					}
 					if (flineFlag) {
 						for (uint8_t x = 0; x < csvItem.size(); x++)
-							channelNames[x] = QString("Field-") + QString::number(x);
+							channelNames << QString("Field-") + QString::number(x);
 					}
 
 				} else if (flineFlag) {
