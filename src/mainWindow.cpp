@@ -120,7 +120,16 @@ mainWindow::mainWindow(QWidget *parent) : QMainWindow(parent) {
 	createToolBar();
 	createCentralWidget();
 	createStatusBar();
-	
+
+	// Enable/disable signal visualization
+	connect(signalsList, &QListWidget::itemChanged, this, [this](QListWidgetItem *item) {
+		int row = signalsList->row(item);
+		if (row >= 0 && row < channelEnabled.size()) {
+			channelEnabled[row] = (item->checkState() == Qt::Checked);
+			sendDataToDisplay();
+		}
+	});
+
 	// Zoom selectors linking
 	connect(yScaleDial, &QDial::valueChanged, this, &mainWindow::sendDataToDisplay);
 	connect(xScaleDial, &QDial::valueChanged, this, &mainWindow::sendDataToDisplay);
@@ -154,47 +163,6 @@ void mainWindow::createToolBar() {
 
 	toolbar->addAction(openCsvAction);
 }
-
-/*
-void mainWindow::createCentralWidget() {
-	//
-	// Description:
-	//	it creates the oscilloscope's display
-	//
-	QWidget *central = new QWidget(this);
-	QVBoxLayout *layout = new QVBoxLayout(central);
-	
-	plot = new plotBox(central);
-	
-	QWidget *controls = new QWidget(central);
-	QHBoxLayout *ctrlLayout = new QHBoxLayout(controls);
-	
-	xScaleDial = new QDial(controls);
-	xScaleDial->setRange(1,100);
-	xScaleDial->setValue(10);
-	
-	yScaleDial = new QDial(controls);
-	yScaleDial->setRange(1,100);
-	yScaleDial->setValue(10);
-	
-	ctrlLayout->addWidget(new QLabel("X scale"));
-	ctrlLayout->addWidget(xScaleDial);
-	
-	ctrlLayout->addStretch();   // spazio
-	
-	ctrlLayout->addWidget(new QLabel("Y scale"));
-	ctrlLayout->addWidget(yScaleDial);
-	
-	layout->addWidget(plot, 4);     // display
-	layout->addWidget(controls, 1); // pannello basso
-	
-	xScrollBar = new QScrollBar(Qt::Horizontal, controls);
-	xScrollBar->setMinimum(0);
-	xScrollBar->setMaximum(0);
-	xScrollBar->setValue(0);
-	ctrlLayout->addWidget(xScrollBar);
-}
-*/
 
 void mainWindow::createCentralWidget() {
 	QWidget     *central = new QWidget(this);
@@ -254,6 +222,7 @@ void mainWindow::createCentralWidget() {
 
 	setCentralWidget(central);
 }
+
 void mainWindow::createStatusBar() {
 	statusBar()->showMessage("Ready");
 }
@@ -299,7 +268,7 @@ bool mainWindow::sendDataToDisplay() {
 			
 		}
 		
-		plot->setDataPool(subSet);
+		plot->setDataPool(subSet, channelEnabled);
 
 		status = true;
 	}
@@ -365,19 +334,22 @@ void mainWindow::openCsv() {
 			}
 
 			if (err == false) {
-				QListWidgetItem *item = nullptr;
-				QColor          color;
+				QColor color;
 
 				statusBar()->showMessage("Loaded: " + fileName);
 				QMessageBox::information(this, "CSV selected", fileName);
 				sendDataToDisplay();
 
 				signalsList->clear();
+				channelEnabled.clear();
 
 				for (int i = 0; i < channelNames.size(); ++i) {
-					item = new QListWidgetItem(channelNames[i]);
+					QListWidgetItem *item = new QListWidgetItem(channelNames[i]);
 					item->setForeground(channelColors[i]);
+					item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+					item->setCheckState(Qt::Checked);
 					signalsList->addItem(item);
+					channelEnabled.append(true);
 				}
 			}
 		}

@@ -67,7 +67,7 @@ class mainWindow : public QMainWindow {
 public:
 	explicit mainWindow(QWidget *parent = nullptr);
 	~mainWindow() override = default;
-
+	
 private:
 	void createMenus();
 	void createToolBar();
@@ -85,6 +85,7 @@ private:
 	plotBox                  *plot          = nullptr;
 	QStringList              channelNames   = {};
 	QListWidget              *signalsList   = nullptr;
+	QVector<bool>            channelEnabled = {};
 
 private slots:
 	void openCsv();

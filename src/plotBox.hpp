@@ -28,7 +28,7 @@ class plotBox : public QWidget {
 
 public:
 	explicit plotBox(QWidget *parent = nullptr);
-	void     setDataPool(QVector<QVector<double>> &visibleData);
+	void     setDataPool(QVector<QVector<double>> &visibleData, QVector<bool> sigSelect);
 	
 protected:
 	void paintEvent(QPaintEvent *) override;
@@ -42,6 +42,7 @@ private:
 	int                      xScale = 10;
 	int                      yScale = 10;
 	QVector<QVector<double>> dataPool = {};
+	QVector<bool>            channelMap = {};
 
 signals:
     void resized();

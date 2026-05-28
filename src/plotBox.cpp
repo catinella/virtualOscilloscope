@@ -56,7 +56,7 @@ void plotBox::resizeEvent(QResizeEvent *) {
 	//update();
 }
 
-void plotBox::paintEvent(QPaintEvent *) {
+void plotBox::paintEvent (QPaintEvent *) {
 	//
 	// Description:
 	//	This method overrides the parent's virtual inherited method. It draws the object everytime the
@@ -68,18 +68,19 @@ void plotBox::paintEvent(QPaintEvent *) {
 	draw();
 }
 
-void plotBox::setXScale(int value) {
+void plotBox::setXScale (int value) {
 	xScale = value;
 	update();
 }
 
-void plotBox::setYScale(int value) {
+void plotBox::setYScale (int value) {
 	yScale = value;
 	update();
 }
 
-void plotBox::setDataPool(QVector<QVector<double>> &visibleData) {
+void plotBox::setDataPool (QVector<QVector<double>> &visibleData, QVector<bool> sigSelect) {
 	dataPool = visibleData;
+	channelMap = sigSelect;
 	update();
 }
 
@@ -95,9 +96,11 @@ void plotBox::draw() {
 		//qDebug() << dataPool[x][0];
 		if (x > 0 && dataPool[x-1].isEmpty() == false && dataPool[x].isEmpty() == false) {
 			for (int w=0; w<dataPool[x].size(); w++) {
-				color = QColor::fromHsv( (w * 60) % 360, 255, 255 );
-				painter.setPen(channelColors[w]);
-				painter.drawLine(x - 1, yZero - dataPool[x - 1][w], x, yZero - dataPool[x][w]);
+				if (channelMap.size() != dataPool[x].size() || channelMap[w] == true) {
+					color = channelColors[w];
+					painter.setPen(channelColors[w]);
+					painter.drawLine(x - 1, yZero - dataPool[x - 1][w], x, yZero - dataPool[x][w]);
+				}
 			}
 		}
 	}
