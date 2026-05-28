@@ -43,6 +43,7 @@
 #include <plotBox.hpp>
 #include <QDial>
 #include <QScrollBar>
+#include <QListWidget>
 
 #define CSVFIELDSPLITTER ','
 
@@ -71,7 +72,9 @@ private:
 	QAction                  *exitAction    = nullptr;
 	QVector<QVector<double>> dataPool       = {};
 	plotBox                  *plot          = nullptr;
-	
+	QStringList              channelNames   = {};
+	QListWidget              *signalsList   = nullptr;
+
 private slots:
 	void openCsv();
 };

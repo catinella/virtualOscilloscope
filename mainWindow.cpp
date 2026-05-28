@@ -35,6 +35,15 @@
 #include <QStringList>
 #include <QDebug>
 
+QVector<QColor> channelColors = {
+    Qt::red,
+    Qt::green,
+    Qt::blue,
+    Qt::yellow,
+    Qt::cyan,
+    Qt::magenta,
+    Qt::white
+};
 //------------------------------------------------------------------------------------------------------------------------------
 //                                       P R I V A T E   F U N C T I O N S
 //------------------------------------------------------------------------------------------------------------------------------
@@ -207,6 +216,9 @@ void mainWindow::createCentralWidget() {
 	QHBoxLayout *dialLayout     = new QHBoxLayout();
 
 	xScrollBar = new QScrollBar(Qt::Horizontal, controls);
+	xScrollBar->setMinimum(0);
+	xScrollBar->setMaximum(0);
+	xScrollBar->setValue(0);
 
 	xScaleDial = new QDial(controls);
 	xScaleDial->setRange(1, 100);
@@ -216,15 +228,23 @@ void mainWindow::createCentralWidget() {
 	yScaleDial->setRange(1, 100);
 	yScaleDial->setValue(50);
 
+	signalsList = new QListWidget(controls);
+	signalsList->setMinimumWidth(160);
+	signalsList->setMaximumHeight(90);
+
 	controlsLayout->addWidget(xScrollBar);
 	controlsLayout->addLayout(dialLayout);
 
-	dialLayout->addWidget(new QLabel("X scale"));
+	dialLayout->addWidget(new QLabel("X scale", controls));
 	dialLayout->addWidget(xScaleDial);
 
 	dialLayout->addStretch();
 
-	dialLayout->addWidget(new QLabel("Y scale"));
+	dialLayout->addWidget(signalsList);
+
+	dialLayout->addStretch();
+
+	dialLayout->addWidget(new QLabel("Y scale", controls));
 	dialLayout->addWidget(yScaleDial);
 
 	layout->addWidget(plot, 4);
@@ -232,8 +252,6 @@ void mainWindow::createCentralWidget() {
 
 	setCentralWidget(central);
 }
-
-
 void mainWindow::createStatusBar() {
 	statusBar()->showMessage("Ready");
 }
@@ -310,29 +328,55 @@ void mainWindow::openCsv() {
 			uint8_t         numOfFields = 0;
 			bool            err = false;
 			QString         rowString("");
-			
+			bool            flineFlag = true;
+
 			// Old data removing...
 			dataPool.clear();
 			
 			while (in.atEnd() == false) {
 				rowString = in.readLine();
 				if (_rowToVect (csvItem, rowString)) {
+					// Dtata collecting
 					if (numOfFields == 0 || numOfFields == csvItem.size()) {
 						numOfFields = csvItem.size();
 						dataPool.append(csvItem);
 						xScrollBar->setMaximum(std::max(0, (int)dataPool.size() - plot->width()));
 					}
+					if (flineFlag) {
+						for (uint8_t x = 0; x < csvItem.size(); x++)
+							channelNames[x] = QString("Field-") + QString::number(x);
+					}
+
+				} else if (flineFlag) {
+					// Field names recording
+					channelNames = rowString.split(",");
+					qDebug() << "Found labels: " << channelNames << "\n";
+
 				} else {
+					// ERROR!
 					qDebug() << "-->" << rowString;
 					QMessageBox::warning(this, "ERROR!", "Corrupted data");
 					err = true;
 				}
+				flineFlag = false;
 			}
 
 			if (err == false) {
+				QListWidgetItem *item = nullptr;
+				QColor          color;
+
 				statusBar()->showMessage("Loaded: " + fileName);
 				QMessageBox::information(this, "CSV selected", fileName);
 				sendDataToDisplay();
+
+				signalsList->clear();
+
+				for (int i = 0; i < channelNames.size(); ++i) {
+					item = new QListWidgetItem(channelNames[i]);
+					color = channelColors[i % channelColors.size()];
+					item->setForeground(color);
+					signalsList->addItem(item);
+				}
 			}
 		}
 	}
