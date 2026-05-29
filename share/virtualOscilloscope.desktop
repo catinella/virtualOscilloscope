@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Virtual Oscilloscope
+GenericName=CSV Signal Viewer
+Comment=Visualize and inspect signals stored in CSV files
+Exec=virtualOscilloscope %f
+Icon=virtualOscilloscope
+Terminal=false
+Categories=Development;Electronics;Science;
+MimeType=text/csv;
+StartupNotify=true
