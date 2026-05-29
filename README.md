@@ -17,8 +17,11 @@ useful for embedded development, data analysis, and filter debugging.
 ### 2.1 Build the source code
 In order to build the software you need the standard QT libraries and the Qmake (ver 6) building tool. For the next step
 enter in the <project>/src sub folder and type the following command:
+	
 	qmake6 && make
+
 If you want to install just the binary, you can use the following command
+
 	[PREFIX=<folder>] make install
 
 ### 2.2 Application installation
