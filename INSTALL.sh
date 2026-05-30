@@ -48,8 +48,14 @@ case "$cmd" in
 		cp -v share/virtualOscilloscope_*.png                         $PREFIX/share/icons
 		cp -v share/virtualOscilloscope.desktop                       $PREFIX/share/applications
 		ln -s $PREFIX/share/icons/virtualOscilloscope_${ICONSIZE}.png $PREFIX/share/icons/virtualOscilloscope.png
+
+		# Configuration data updating...
+		echo "PREFIX=\"$PREFIX\"" > INSTALL.conf
 	;;
 	"uninstall")
+		# Last configuration loading...
+		[ -e INSTALL.conf ] && source INSTALL.conf
+
 		cd src && qmake6 && PREFIX="$PREFIX" make uninstall
 		cd $myPwd
 		rm -fv $PREFIX/share/icons/virtualOscilloscope*.png    
