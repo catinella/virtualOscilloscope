@@ -30,6 +30,10 @@ case "$cmd" in
 		cp -v share/virtualOscilloscope.desktop  /usr/share/applications
 	;;
 	"uninstall")
+		cd src && qmake6 && make uninstall
+		cd $myPwd
+		rm -fv /usr/share/icons/virtualOscilloscope_*.png    
+		rm -fv /usr/share/applications/virtualOscilloscope.desktop  
 	;;
 	*)
 		echo "ERROR! use $0 [{install|uninstall}]"
