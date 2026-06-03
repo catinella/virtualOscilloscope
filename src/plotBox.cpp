@@ -33,14 +33,43 @@ void plotBox::rebuildGrid() {
 	gridLayer.fill(Qt::black);
 	
 	QPainter p(&gridLayer);
-	
-	for(int x = 0; x < width(); x += PLOTBOX_XGRIDSCALE) {
-		p.setPen((x % 50 == 0) ? QColor(70,70,70) : QColor(35,35,35));
+
+	int centerY = height() / 2;
+	int centerX = width() / 2;
+
+	// Right side
+	for(int x = centerX; x < width(); x += PLOTBOX_XGRIDSCALE) {
+		if ((x-centerX) % 50 == 0 || x == centerX)
+			p.setPen(QColor(70,70,70));
+		else
+			p.setPen(QColor(35,35,35));
 		p.drawLine(x, 0, x, height());
 	}
 	
-	for(int y = 0; y < height(); y += PLOTBOX_YGRIDSCALE) {
-		p.setPen((y % 50 == 0) ? QColor(70,70,70) : QColor(35,35,35));
+	// Left side
+	for(int x = centerX; x > 0; x -= PLOTBOX_XGRIDSCALE) {
+		if ((centerX-x) % 50 == 0 || x == centerX)
+			p.setPen(QColor(70,70,70));
+		else
+			p.setPen(QColor(35,35,35));
+		p.drawLine(x, 0, x, height());
+	}
+
+	// Up side
+	for(int y = centerY; y < height(); y += PLOTBOX_YGRIDSCALE) {
+		if ((y-centerY) % 50 == 0 || y == centerY)
+			p.setPen(QColor(70,70,70));
+		else
+			p.setPen(QColor(35,35,35));
+		p.drawLine(0, y, width(), y);
+	}
+
+	// Bottom side
+	for(int y = centerY; y > 0; y -= PLOTBOX_YGRIDSCALE) {
+		if ((centerY-y) % 50 == 0 || y == centerY)
+			p.setPen(QColor(70,70,70));
+		else
+			p.setPen(QColor(35,35,35));
 		p.drawLine(0, y, width(), y);
 	}
 }
