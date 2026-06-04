@@ -19,17 +19,47 @@
 cmd="$1"
 cd ${0%/*}
 myPwd=$PWD
+PREFIX="/usr/local"
+ICONSIZE="64x64"
 
 [ -z "$cmd" ] && cmd="install"
 
+numOfProcs=$(cat /proc/cpuinfo |grep processor |wc -l |sed 's/[ \t]//g')
+
 case "$cmd" in
 	"install")
-		cd src && qmake6 && make install
+		answ="###"
+		while [ ! -d "$answ" ]
+		do
+			echo -n "Type the installation PREFIX folder [def. $PREFIX]: "; read answ
+			[ -z "$answ" ] && answ="$PREFIX"
+		done
+		PREFIX="$answ"
+
+		cd src && qmake6 && PREFIX="$PREFIX" make -j${numOfProcs} install
 		cd $myPwd
-		cp -v share/virtualOscilloscope_*.png    /usr/share/icons
-		cp -v share/virtualOscilloscope.desktop  /usr/share/applications
+
+		answ="###"
+		while [ "$answ" != "128x128" -a "$answ" != "64x64" -a "$answ" != "32x32" ]
+		do
+			echo -n "Type prefered icon size [def. $ICONSIZE]: "; read answ
+			[ -z "$answ" ] && answ="$ICONSIZE"
+		done
+		cp -v share/virtualOscilloscope_*.png                         $PREFIX/share/icons
+		cp -v share/virtualOscilloscope.desktop                       $PREFIX/share/applications
+		ln -s $PREFIX/share/icons/virtualOscilloscope_${ICONSIZE}.png $PREFIX/share/icons/virtualOscilloscope.png
+
+		# Configuration data updating...
+		echo "PREFIX=\"$PREFIX\"" > INSTALL.conf
 	;;
 	"uninstall")
+		# Last configuration loading...
+		[ -e INSTALL.conf ] && source INSTALL.conf
+
+		cd src && qmake6 && PREFIX="$PREFIX" make uninstall
+		cd $myPwd
+		rm -fv $PREFIX/share/icons/virtualOscilloscope*.png    
+		rm -fv $PREFIX/share/applications/virtualOscilloscope.desktop  
 	;;
 	*)
 		echo "ERROR! use $0 [{install|uninstall}]"
