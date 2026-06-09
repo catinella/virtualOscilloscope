@@ -13,6 +13,22 @@
 // Description:
 //
 //
+// License:  LGPL ver 3.0
+//
+// 		This script is a free software; you can redistribute it and/or modify it under the terms	of the GNU
+// 		Lesser General Public License as published by the Free Software Foundation; either version 3.0 of the License,
+// 		or (at your option) any later version. 
+//
+//		For further details please read the full LGPL text file [https://www.gnu.org/licenses/lgpl-3.0.txt].
+// 		You should have received a copy of the GNU General Public License along with this file; if not, write to the 
+//
+//			Free Software Foundation, Inc.,
+//			59 Temple Place, Suite 330,
+//			Boston, MA  02111-1307  USA
+//
+//
+//
+//                                                                                                               cols=128 tab=6
 ------------------------------------------------------------------------------------------------------------------------------*/
 #include "mainWindow.hpp"
 #include "plotBox.hpp"
@@ -168,8 +184,25 @@ void mainWindow::createCentralWidget() {
 	QWidget     *central = new QWidget(this);
 	QVBoxLayout *layout  = new QVBoxLayout(central);
 
+	//
+	// Oscilloscope area
+	//
 	plot = new plotBox(central);
+	
+	plot->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
+	QGridLayout *scopeLayout = new QGridLayout();
+	scopeLayout->setSpacing(0);
+	scopeLayout->setContentsMargins(10, 10, 10, 10);
+
+	scopeLayout->addWidget(plot, 0, 0);
+
+	scopeLayout->setColumnStretch(0, 1);  // asse Y
+	scopeLayout->setRowStretch(0, 1);     // plotBox
+
+	//
+	// Controls area
+	//
 	QWidget     *controls       = new QWidget(central);
 	QVBoxLayout *controlsLayout = new QVBoxLayout(controls);
 	QHBoxLayout *dialLayout     = new QHBoxLayout();
@@ -206,7 +239,6 @@ void mainWindow::createCentralWidget() {
 
 	dialLayout->addStretch();
 
-	//dialLayout->addWidget(signalsList);
 	QVBoxLayout *signalsLayout = new QVBoxLayout();
 	signalsLayout->addSpacing(30);
 	signalsLayout->addWidget(signalsList);
@@ -217,7 +249,10 @@ void mainWindow::createCentralWidget() {
 	dialLayout->addWidget(new QLabel("Y scale", controls));
 	dialLayout->addWidget(yScaleDial);
 
-	layout->addWidget(plot, 4);
+	//
+	// Main layout
+	//
+	layout->addLayout(scopeLayout, 4);
 	layout->addWidget(controls, 1);
 
 	setCentralWidget(central);

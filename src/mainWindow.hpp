@@ -20,23 +20,37 @@
 //    The plotBox object acts only as a graphical renderer. It receives a vector of already processed points and is
 //	responsible exclusively for displaying them.
 //
-// Data flow:
+//	Data flow:
 //
-//    CSV data
-//       ↓
-//    mainWindow (processing / scaling / selection)
-//       ↓
-//    QVector<QPointF> visiblePoints
-//       ↓
-//    plotBox (rendering)
-//       ↓
-//    Screen
+//		CSV data
+//		    ↓
+//		mainWindow (processing / scaling / selection)
+//		    ↓
+//		QVector<QPointF> visiblePoints
+//		    ↓
+//		plotBox (rendering)
+//		    ↓
+//		Screen
 //
 //
+// License:  LGPL ver 3.0
+//
+// 		This script is a free software; you can redistribute it and/or modify it under the terms	of the GNU
+// 		Lesser General Public License as published by the Free Software Foundation; either version 3.0 of the License,
+// 		or (at your option) any later version. 
+//
+//		For further details please read the full LGPL text file [https://www.gnu.org/licenses/lgpl-3.0.txt].
+// 		You should have received a copy of the GNU General Public License along with this file; if not, write to the 
+//
+//			Free Software Foundation, Inc.,
+//			59 Temple Place, Suite 330,
+//			Boston, MA  02111-1307  USA
+//
+//
+//
+//                                                                                                               cols=128 tab=6
 ------------------------------------------------------------------------------------------------------------------------------*/
-
-#ifndef MAINWINDOW_HPP
-#define MAINWINDOW_HPP
+#pragma once
 
 #include <QVector>
 #include <QMainWindow>
@@ -86,9 +100,7 @@ private:
 	QStringList              channelNames   = {};
 	QListWidget              *signalsList   = nullptr;
 	QVector<bool>            channelEnabled = {};
-
+	
 private slots:
 	void openCsv();
 };
-
-#endif
