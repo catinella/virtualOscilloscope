@@ -11,17 +11,45 @@
 // Author: Silvano Catinella <catinella@yahoo.com>
 //
 // Description:
-//	This class provides the object that manage the oscilloscope's display. Its main task is receive points, print them on
-//	display area and connect all points with lines. That's it.
+//	This class manage the Oscilloscope's display components: the main display, the X references bar and Y references bar
 //
+//		+-----+----------------------------------+
+//		| +2  |-+-----+-----+-----+-----+-----+--|
+//		|     | |     |     |     |     |     |  |
+//		| +1  |-+-----+-----+-----+-----+-----+--|
+//		|     | |     |     |     |     |     |  |
+//		|  0  |-+-----+---(plotArea)----+-----+--|	
+//		|     | |     |     |     |     |     |  |	
+//		| -1  |-+-----+-----+-----+-----+-----+--|	
+//		|     | |     |     |     |     |     |  |	
+//		| -2  |-+-----+-----+-----+-----+-----+--|
+//		+========================================+
+//		|     | 00    01    02    03    04    05 |
+//		+----------------------------------------+
+//
+// License:  LGPL ver 3.0
+//
+// 	This script is a free software; you can redistribute it and/or modify it under the terms	of the GNU Lesser General
+//	Public License as published by the Free Software Foundation; either version 3.0 of the License,	or (at your option)
+//	any later version. 
+/
+//	For further details please read the full LGPL text file [https://www.gnu.org/licenses/lgpl-3.0.txt].
+// 	You should have received a copy of the GNU General Public License along with this file; if not, write to the 
+//
+//		Free Software Foundation, Inc.,
+//		59 Temple Place, Suite 330,
+//		Boston, MA  02111-1307  USA
+//
+//
+//
+//                                                                                                               cols=128 tab=6
 ------------------------------------------------------------------------------------------------------------------------------*/
-#ifndef PLOTBOX_HPP
-#define PLOTBOX_HPP
+#pragma once
 
 #include <QWidget>
+#include <refsBar.hpp>
+#include <plotArea.hpp>
 
-#define PLOTBOX_XGRIDSCALE 10
-#define PLOTBOX_YGRIDSCALE 10
 
 class plotBox : public QWidget {
 	Q_OBJECT
@@ -35,14 +63,11 @@ protected:
 	void resizeEvent(QResizeEvent *) override;
 
 private:
-	QPixmap gridLayer;
-	void    rebuildGrid();
-	void    draw();
-	
-	int                      xScale = 10;
-	int                      yScale = 10;
-	QVector<QVector<double>> dataPool = {};
-	QVector<bool>            channelMap = {};
+	refsBar      *yBar  = nullptr;
+	refsBar      *xBar  = nullptr;
+	plotArea     *pArea = nullptr;
+	unsigned int xScale = 10;
+	unsigned int yScale = 10;
 
 signals:
     void resized();
@@ -52,4 +77,3 @@ public slots:
 	void setYScale(int value);
 };
 
-#endif
