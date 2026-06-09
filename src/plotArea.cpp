@@ -1,0 +1,227 @@
+/*------------------------------------------------------------------------------------------------------------------------------
+//                   __     ___      _               _     ___           _ _ _                                
+//                   \ \   / (_)_ __| |_ _   _  __ _| |   / _ \ ___  ___(_) | | ___  ___  ___ ___  _ __   ___ 
+//                    \ \ / /| | '__| __| | | |/ _` | |  | | | / __|/ __| | | |/ _ \/ __|/ __/ _ \| '_ \ / _ \
+//                     \ V / | | |  | |_| |_| | (_| | |  | |_| \__ \ (__| | | | (_) \__ \ (_| (_) | |_) |  __/
+//                      \_/  |_|_|   \__|\__,_|\__,_|_|   \___/|___/\___|_|_|_|\___/|___/\___\___/| .__/ \___|
+//                                                                                                |_|
+//
+// File:   plotArea.cpp
+//
+// Author: Silvano Catinella <catinella@yahoo.com>
+//
+// Description:
+//	This class is responsible for the grid management and the functions plotting
+//	The distance betwwen the (vertical or orizonal) lines is fiuxed. If the user change the app's windpow size, the number
+//	of lines belong to the grid will change
+//	
+//		+----------------------------------+
+//		|-+-----+-----+-----+-----+-----+--|
+//		| |     |     |     |     |     |  |
+//		|-+-----+-----+-----+-----+-----+--|
+//		| |     |     |     |     |     |  |
+//		|-+-----+-----+-----+-----+-----+--|	
+//		| |     |     |     |     |     |  |	
+//		|-+-----+-----+-----+-----+-----+--|	
+//		| |     |     |     |     |     |  |	
+//		|-+-----+-----+-----+-----+-----+--|
+//		+----------------------------------+
+//
+// License:  LGPL ver 3.0
+//
+// 		This script is a free software; you can redistribute it and/or modify it under the terms	of the GNU
+// 		Lesser General Public License as published by the Free Software Foundation; either version 3.0 of the License,
+// 		or (at your option) any later version. 
+//
+//		For further details please read the full LGPL text file [https://www.gnu.org/licenses/lgpl-3.0.txt].
+// 		You should have received a copy of the GNU General Public License along with this file; if not, write to the 
+//
+//			Free Software Foundation, Inc.,
+//			59 Temple Place, Suite 330,
+//			Boston, MA  02111-1307  USA
+//
+//
+//
+//                                                                                                               cols=128 tab=6
+------------------------------------------------------------------------------------------------------------------------------*/
+#include "plotArea.hpp"
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QFrame>
+#include <QPainter>
+#include <mainWindow.hpp>
+#include <algorithm>
+#include <debugTools.hpp>
+
+plotArea::plotArea(QWidget *parent) : QWidget(parent) {
+	QHBoxLayout *layout = new QHBoxLayout(this);
+
+
+	layout->setContentsMargins(0, 0, 0, 0);
+	layout->setSpacing(0);
+
+
+	setLayout(layout);
+
+}
+
+void plotArea::rebuildGrid() {
+	//
+	// Description:
+	//	This method draw the oscilloscope display's grid. As in a real instrument the grid is independent by the scaling
+	//	factor. But, because the user can reduce or enlarge the app's window, the number of lines must change dinamically.
+	//	In this case this data is availabre reading the yRefs property, and it used by plotBox to manage the measure
+	//	references bar, usually.
+	//
+	QVector<unsigned int> yRefsPos = {};
+	QVector<unsigned int> xRefsPos = {};
+	gridLayer                      = QPixmap(size());
+	unsigned int          centerY  = height() / 2;
+	unsigned int          centerX  = width() / 2;
+	unsigned int          w        = 0;
+
+	gridLayer.fill(Qt::black);
+	
+	QPainter p(&gridLayer);
+
+	//
+	// X bar
+	//
+	for (int x = 0; x < width(); x += PLOTAREA_XGRID) {
+		if (w == PLOTAREA_LRAT - 1) {
+			p.setPen(QColor(70,70,70));
+			xRefsPos.push_back(x);
+			w = 0;
+		} else {
+			p.setPen(QColor(35,35,35));
+			w++;
+		}
+		p.drawLine(x, 0, x, height());
+	}
+
+	//
+	// Bottom side
+	//
+	w = 0;
+	for (int y = centerY+PLOTAREA_YGRID; y < height(); y += PLOTAREA_YGRID) {
+		if (w == PLOTAREA_LRAT - 1) {
+			p.setPen(QColor(70,70,70));
+			yRefsPos.push_back(y);
+			w = 0;
+		} else {
+			p.setPen(QColor(35,35,35));
+			w++;
+		}
+		p.drawLine(0, y, width(), y);
+	}
+
+	//
+	// Zero line
+	//
+	{
+		unsigned int y = centerY;
+		p.setPen(QColor(70,70,70));
+		yRefsPos.push_back(y);
+		p.drawLine(0, y, width(), y);
+	}
+	
+	//
+	// Up side
+	//
+	w = 0;
+	for (int y = centerY-PLOTAREA_YGRID; y > 0; y -= PLOTAREA_YGRID) {
+		if (w == PLOTAREA_LRAT - 1) {
+			p.setPen(QColor(70,70,70));
+			yRefsPos.push_back(y);
+			w = 0;
+		} else {
+			p.setPen(QColor(35,35,35));
+			w++;
+		}
+		p.drawLine(0, y, width(), y);
+	}
+
+	std::sort(yRefsPos.begin(), yRefsPos.end());
+
+	QDBG << "RIGHE   = " << yRefsPos.size() << "\n";
+	QDBG << "COLONNE = " << xRefsPos.size() << "\n";
+	emit gridReady(yRefsPos, xRefsPos);	
+}
+
+void plotArea::resizeEvent(QResizeEvent *) {
+	//
+	// Description:
+	//	This signal is generated by plotArea's window resized event. plotArea advise everyone its displayed data can be no
+	//	more coerent and it needs new updated data. This signal is trapped by mainWinow
+	//
+	rebuildGrid();
+	emit resized();
+	//update();
+}
+
+void plotArea::paintEvent (QPaintEvent *) {
+	//
+	// Description:
+	//	This method overrides the parent's virtual inherited method. It draws the object everytime the
+	//	parent object is redrawed
+	//
+	QPainter p(this);
+	if (gridLayer.isNull()) rebuildGrid();
+	p.drawPixmap(0, 0, gridLayer);
+	draw();
+}
+
+void plotArea::setXScale (int value) {
+	//
+	// Description:
+	//	It sets the X (time) scale, modified eith the left wheel
+	//
+	xScale = value;
+	update();
+}
+
+void plotArea::setYScale (int value) {
+	//
+	// Description:
+	//	It sets the Y (volts) scale, modified eith the right wheel
+	//
+	yScale = value;
+	update();
+}
+
+void plotArea::setDataPool (QVector<QVector<double>> &visibleData, QVector<bool> sigSelect) {
+	//
+	// Description:
+	//	This method is called by the plotBox to send the data to be plotted
+	//
+	dataPool = visibleData;
+	channelMap = sigSelect;
+	update();
+}
+
+void plotArea::draw() {
+	//
+	// Description:
+	//	This method plots all the enabled functions
+	//
+	QPainter painter(this);
+	QColor   color;
+	
+	painter.setPen(Qt::green);
+	
+	const int yZero = height()/2;
+	
+	for (int x=0; x<dataPool.size(); x++) {
+		//qDebug() << dataPool[x][0];
+		if (x > 0 && dataPool[x-1].isEmpty() == false && dataPool[x].isEmpty() == false) {
+			for (int w=0; w<dataPool[x].size(); w++) {
+				if (channelMap.size() != dataPool[x].size() || channelMap[w] == true) {
+					color = channelColors[w];
+					painter.setPen(channelColors[w]);
+					painter.drawLine(x - 1, yZero - dataPool[x - 1][w], x, yZero - dataPool[x][w]);
+				}
+			}
+		}
+	}
+}
+
