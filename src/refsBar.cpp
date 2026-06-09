@@ -80,7 +80,7 @@ void refsBar::paintEvent(QPaintEvent *) {
 
 	if (dir == VERTICAL) {
 		maxValue   = (height() / 2.0f) / scale;  // The higher ref value
-		valueStep  = (2.0f * maxValue) / (positions.size() - 1);
+		valueStep  = (2.0f * maxValue) / (positions.size());
 		
 		// [!] yRefsPos.size() should be always odd number
 		for (int t = (positions.size() - 1); t >= 0; t--) {
