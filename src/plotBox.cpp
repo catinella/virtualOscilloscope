@@ -13,20 +13,22 @@
 // Description:
 //	This class manage the Oscilloscope's display components: the main display, the X references bar and Y references bar
 //
-//		+-----+----------------------------------+
-//		| +2  |-+-----+-----+-----+-----+-----+--|
-//		|     | |     |     |     |     |     |  |
-//		| +1  |-+-----+-----+-----+-----+-----+--|
-//		|     | |     |     |     |     |     |  |
-//		|  0  |-+-----+---(plotArea)----+-----+--|	
-//		|     | |     |     |     |     |     |  |	
-//		| -1  |-+-----+-----+-----+-----+-----+--|	
-//		|     | |     |     |     |     |     |  |	
-//		| -2  |-+-----+-----+-----+-----+-----+--|
-//		+========================================+
-//		|     | 00    01    02    03    04    05 |
-//		+----------------------------------------+
+//	References bar updating process:
+//	================================
 //
+//		plotBox              PlotArea               refsBAR
+//		   |                    |                      |
+//		////////////////////////////////////////////////////
+//		   |                    +---+                  |
+//		   |                    |   |                  |
+//		   |                    |   |rebuildGrid()     |
+//		   |                    |   |                  |
+//		   |        gridReady() |<--+                  |              Symbol description  
+//		   |<===================+                      |            +-------+-------------+
+//		   |                    |          setRefsPos()|            |  ===> |  QT-signal  |
+//		   +------------------------------------------>|            +-------+-------------+
+//		   |                    |                      |            |  ---> | Method call |
+//		   |                    |                      |            +-------+-------------+
 //
 //
 // License:  LGPL ver 3.0
@@ -42,8 +44,6 @@
 //			59 Temple Place, Suite 330,
 //			Boston, MA  02111-1307  USA
 //
-//
-//
 //                                                                                                               cols=128 tab=6
 ------------------------------------------------------------------------------------------------------------------------------*/
 #include "plotBox.hpp"
@@ -54,6 +54,10 @@
 #include <mainWindow.hpp>
 
 plotBox::plotBox(QWidget *parent) : QWidget(parent) {
+	//
+	// Description:
+	//	The class constructor
+	//
 	QHBoxLayout           *layout  = new QHBoxLayout(this);
 	QVector<unsigned int> rows     = {};
 	QVector<unsigned int> columns  = {};
@@ -80,10 +84,17 @@ plotBox::plotBox(QWidget *parent) : QWidget(parent) {
 	pArea->rebuildGrid();
 
 	setLayout(layout);
+	
+	return;
 }
 
 void plotBox::setDataPool (QVector<QVector<double>> &visibleData, QVector<bool> sigSelect) {
+	//
+	// Description:
+	//	This method is used by mainWindows class' object to send data to the Oscilloscope's display
+	//
 	pArea->setDataPool (visibleData, sigSelect);
+	return;
 }
 	
 void plotBox::paintEvent(QPaintEvent *arg) {
