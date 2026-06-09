@@ -31,14 +31,9 @@ TARGET = virtualOscilloscope
 
 PREFIX = /usr/local
 
-SOURCES += \
-	main.cpp \
-	mainWindow.cpp \
-	plotBox.cpp
+SOURCES += main.cpp mainWindow.cpp plotBox.cpp refsBar.cpp plotArea.cpp
 
-HEADERS += \
-	mainWindow.hpp \
-	plotBox.hpp
+HEADERS += mainWindow.hpp plotBox.hpp refsBar.hpp plotArea.hpp
 
 cleanall.target   = cleanall
 cleanall.depends  = clean
