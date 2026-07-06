@@ -54,6 +54,15 @@
 #include <mainWindow.hpp>
 #include <debugTools.hpp>
 
+unsigned int plotBox::get_xPlottableArea() {
+	//
+	// Dwescription:
+	//	It return the length of the usable area to plot data. The method is used by mainWindow to select the visible data
+	//	set, mainly.
+	//
+	return(pArea->width());
+}
+
 plotBox::plotBox(QWidget *parent) : QWidget(parent) {
 	//
 	// Description:
@@ -67,10 +76,8 @@ plotBox::plotBox(QWidget *parent) : QWidget(parent) {
 	//xBar  = new refsBar(refsBar::HORIZONTAL, this);
 	pArea = new plotArea(this);
 
-	connect(pArea, &plotArea::gridReady,
-        this, [this](QVector<unsigned int> rows, QVector<unsigned int> columns) {
+	connect(pArea, &plotArea::gridReady, this, [this](QVector<unsigned int> rows, QVector<unsigned int>) {
             yBar->setRefsPos(rows);
-            //xBar->setRefsPos(columns);
       });
         
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -101,10 +108,9 @@ void plotBox::setDataPool (QVector<QVector<double>> &visibleData, QVector<bool> 
 void plotBox::paintEvent(QPaintEvent *arg) {
 }
 	
-
 void plotBox::resizeEvent(QResizeEvent *arg) {
 }
-	
+
 void plotBox::set_xScale (int value) {
 	xScale = value;
 //	xBar->setScale(value);

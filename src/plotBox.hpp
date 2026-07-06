@@ -55,11 +55,12 @@ class plotBox : public QWidget {
 	Q_OBJECT
 
 public:
-	explicit plotBox(QWidget *parent = nullptr);
-	void     setDataPool(QVector<QVector<double>> &visibleData, QVector<bool> sigSelect);
-	void     set_xScale(int value);
-	void     set_yScale(int value);
-	
+	explicit     plotBox(QWidget *parent = nullptr);
+	void         setDataPool(QVector<QVector<double>> &visibleData, QVector<bool> sigSelect);
+	void         set_xScale(int value);
+	void         set_yScale(int value);
+	unsigned int get_xPlottableArea();
+
 protected:
 	void paintEvent(QPaintEvent *) override;
 	void resizeEvent(QResizeEvent *) override;
