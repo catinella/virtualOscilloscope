@@ -25,6 +25,21 @@ QT += widgets gui
 
 CONFIG += c++17
 CONFIG -= app_bundle
+GDB = $$(GDB)
+
+equals(GDB, 1) {
+	message("*** DEBUG BUILD ***")
+	CONFIG += debug
+	CONFIG -= release
+	QMAKE_CXXFLAGS += -g -O0
+	QMAKE_CFLAGS   += -g -O0
+} else {
+	message("*** RELEASE BUILD ***")
+	CONFIG -= debug
+	CONFIG += release
+	QMAKE_CXXFLAGS += -O2
+	QMAKE_CFLAGS   += -O2
+}
 
 TEMPLATE = app
 TARGET = virtualOscilloscope
