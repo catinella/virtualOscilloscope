@@ -157,8 +157,6 @@ mainWindow::mainWindow(QWidget *parent) : QMainWindow(parent) {
 	connect(
 		plot, &plotBox::resized, this, [this]() {
 			sendDataToDisplay();
-			// TODO: leggere le manopole
-			// TODO: plot->set_xScale() plot->set_yScale()
 		}
 	);
 	
@@ -286,7 +284,7 @@ bool mainWindow::sendDataToDisplay() {
 		QVector<QVector<double>> subSet, tmpSet;
 		double             xScale = std::pow(100.0, ((double)xScaleDial->value() - 50)/50);
 		double             yScale = std::pow(100.0, ((double)yScaleDial->value() - 50)/50);
-		const unsigned int maxDrawablePoints = plot->width();
+		const unsigned int maxDrawablePoints = plot->get_xPlottableArea();
 		bool               end = false;
 		unsigned int       t = scrollPos;
 		
