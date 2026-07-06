@@ -52,6 +52,7 @@
 #include <QFrame>
 #include <QPainter>
 #include <mainWindow.hpp>
+#include <debugTools.hpp>
 
 plotBox::plotBox(QWidget *parent) : QWidget(parent) {
 	//
@@ -104,12 +105,16 @@ void plotBox::paintEvent(QPaintEvent *arg) {
 void plotBox::resizeEvent(QResizeEvent *arg) {
 }
 	
-void plotBox::setXScale (int value) {
+void plotBox::set_xScale (int value) {
 	xScale = value;
+//	xBar->setScale(value);
 	update();
 }
 
-void plotBox::setYScale (int value) {
+void plotBox::set_yScale (int value) {
 	yScale = value;
+	float realScale = std::pow(100.0f, ((float)value - 50.0f) / 50.0f);
+	yBar->setScale(realScale);
+
 	update();
 }

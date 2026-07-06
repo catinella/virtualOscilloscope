@@ -32,6 +32,7 @@
 #include <refsBar.hpp>
 #include <QPainter>
 #include <debugTools.hpp>
+#include <algorithm>
 
 refsBar::refsBar (towards_t barDir, QWidget *parent): QWidget{parent}, dir{barDir} {
 	setFixedWidth(50);
@@ -40,12 +41,13 @@ refsBar::refsBar (towards_t barDir, QWidget *parent): QWidget{parent}, dir{barDi
 
 void refsBar::setScale (float scale_a) {
 	scale = scale_a;
+	update();
 	return;
 }
 
 void refsBar::setRefsPos (QVector<unsigned int> &positions_a) {
 	positions = positions_a;
-	QDBG << "POSITIONS = " << positions.size() << "\n";
+	//QDBG << "POSITIONS = " << positions.size() << "\n";
 	update();
 	return;
 }
@@ -79,14 +81,14 @@ void refsBar::paintEvent(QPaintEvent *) {
 	int textHeight = fm.height();
 
 	if (dir == VERTICAL) {
-		maxValue   = (height() / 2.0f) / scale;  // The higher ref value
+		maxValue   = ((float)height() / 2.0f)/scale;  // The higher ref value
 		valueStep  = (2.0f * maxValue) / (positions.size());
 		
 		// [!] yRefsPos.size() should be always odd number
 		for (int t = (positions.size() - 1); t >= 0; t--) {
 			div_t hp = div((unsigned int)positions.size(), 2);
 			valueFloat = ((hp.quot - t) * valueStep);
-			valueString = QString("%1").arg(valueFloat, 6, 'f', 2, QChar('0'));
+			valueString = QString("%1").arg(valueFloat, 4, 'f', 2, QChar('0'));
 			p.drawText(
 				0,
 				(positions[t] - textHeight/2),
@@ -100,7 +102,7 @@ void refsBar::paintEvent(QPaintEvent *) {
 		valueStep  = maxValue / (positions.size() - 1);
 		
 		for (unsigned int t = 0; t< positions.size(); t++) {
-			valueFloat = (t * valueStep);
+			valueFloat = (t * valueStep) * scale;
 			valueString = QString::number(valueFloat, 'f', 2);
 			p.drawText(
 				(positions[t]),

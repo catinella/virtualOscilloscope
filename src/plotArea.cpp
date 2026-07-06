@@ -142,9 +142,10 @@ void plotArea::rebuildGrid() {
 	}
 
 	std::sort(yRefsPos.begin(), yRefsPos.end());
-
+/*
 	QDBG << "RIGHE   = " << yRefsPos.size() << "\n";
 	QDBG << "COLONNE = " << xRefsPos.size() << "\n";
+*/
 	emit gridReady(yRefsPos, xRefsPos);	
 }
 
@@ -177,6 +178,7 @@ void plotArea::setXScale (int value) {
 	//	It sets the X (time) scale, modified eith the left wheel
 	//
 	xScale = value;
+	QDBG << "X-scale = " << xScale;
 	update();
 }
 
@@ -186,6 +188,7 @@ void plotArea::setYScale (int value) {
 	//	It sets the Y (volts) scale, modified eith the right wheel
 	//
 	yScale = value;
+	QDBG << "Y-scale = " << yScale;
 	update();
 }
 

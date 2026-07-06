@@ -150,8 +150,17 @@ mainWindow::mainWindow(QWidget *parent) : QMainWindow(parent) {
 	connect(yScaleDial, &QDial::valueChanged, this, &mainWindow::sendDataToDisplay);
 	connect(xScaleDial, &QDial::valueChanged, this, &mainWindow::sendDataToDisplay);
 	
+	connect(yScaleDial, &QDial::valueChanged, plot, &plotBox::set_yScale);
+	connect(xScaleDial, &QDial::valueChanged, plot, &plotBox::set_xScale);
+
 	// Display resizing event management
-	connect(plot, &plotBox::resized, this, &mainWindow::sendDataToDisplay);
+	connect(
+		plot, &plotBox::resized, this, [this]() {
+			sendDataToDisplay();
+			// TODO: leggere le manopole
+			// TODO: plot->set_xScale() plot->set_yScale()
+		}
+	);
 	
 	// Display scrolling management
 	connect(
