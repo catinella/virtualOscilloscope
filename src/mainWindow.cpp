@@ -293,7 +293,12 @@ bool mainWindow::sendDataToDisplay() {
 		tmpSet.clear();
 		
 	//	QDBG << "xScale = " << xScale;
-
+		xScrollBar->setMaximum(
+			std::max(0, 
+				static_cast<int>(std::ceil(dataPool.size() / xScale)) -
+				static_cast<int>(plot->get_xPlottableArea())
+			)
+		);
 		while (subSet.size() < maxDrawablePoints && end == false) {
 			if (xScale >= 1.0) {
 				const qsizetype idx = static_cast<qsizetype>(std::round(t * xScale));
@@ -362,7 +367,12 @@ void mainWindow::openCsv() {
 					if (numOfFields == 0 || numOfFields == csvItem.size()) {
 						numOfFields = csvItem.size();
 						dataPool.append(csvItem);
-						xScrollBar->setMaximum(std::max(0, (int)dataPool.size() - plot->width()));
+						xScrollBar->setMaximum(
+							std::max(0, 
+								static_cast<int>(std::ceil(dataPool.size())) -
+								static_cast<int>(plot->get_xPlottableArea())
+							)
+						);
 					}
 					if (flineFlag) {
 						for (uint8_t x = 0; x < csvItem.size(); x++)
