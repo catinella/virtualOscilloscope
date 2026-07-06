@@ -77,7 +77,6 @@ void plotArea::rebuildGrid() {
 	QVector<unsigned int> xRefsPos = {};
 	gridLayer                      = QPixmap(size());
 	unsigned int          centerY  = height() / 2;
-	unsigned int          centerX  = width() / 2;
 	unsigned int          w        = 0;
 
 	gridLayer.fill(Qt::black);
