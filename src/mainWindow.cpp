@@ -50,6 +50,7 @@
 #include <QString>
 #include <QStringList>
 #include <QDebug>
+#include <debugTools.hpp>
 
 //------------------------------------------------------------------------------------------------------------------------------
 //                                       P R I V A T E   F U N C T I O N S
@@ -291,16 +292,23 @@ bool mainWindow::sendDataToDisplay() {
 		subSet.clear();
 		tmpSet.clear();
 		
+	//	QDBG << "xScale = " << xScale;
+
 		while (subSet.size() < maxDrawablePoints && end == false) {
 			if (xScale >= 1.0) {
-				if ((t * xScale) < dataPool.size()) {
-					subSet.append(_yRescale(dataPool[round(t * xScale)], yScale));
+				const qsizetype idx = static_cast<qsizetype>(std::round(t * xScale));
+
+				if (idx < dataPool.size()) {
+					subSet.append(_yRescale(dataPool[idx], yScale));
 				} else
 					end = true;
 					
 			} else if (t == 0) {
 				subSet.append(_yRescale(dataPool[0], yScale));
-				
+			
+			} else if (t >= dataPool.size()) {
+      			end = true;
+
 			} else {
 				tmpSet = _paddingPoints(dataPool[t-1], dataPool[t], round(1/xScale));
 				for (QVector<QVector<double>>::iterator it = tmpSet.begin(); it < tmpSet.end(); it++)
