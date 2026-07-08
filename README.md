@@ -24,10 +24,20 @@ If you want to install just the binary, you can use the following command
 
 	[PREFIX=<folder>] make install
 
-### 2.2 Application installation
-In order to build and install all the files you can run the *INSTALL.sh* script
+## 3.0 How to install virtualOscilloscope software
+In order to avoid to create the common INSTALL script to install and remove minute software, I have created the winstall
+sub-module. It allows you to install and remove the package in easy way. The **winstall.sh** file should be located in the
+toows/winstall folder. If the folder is missing, then you have to clone the sub-module with the following command:
 
-## 3.0 Licence:
+	git submodule update --init --recursive
+
+When you bave downloaded the sub-module, you can install mionute with the following command:
+
+	sudo ./tools/winstall/winstall.sh --cmd=install --verbose
+
+For further information on this tool, please, read the [winstall project's page](https://github.com/catinella/winstall)
+
+## 4.0 Licence:
 This project is a free software; you can redistribute it and/or modify it under the terms	of the GNU Lesser General Public License
 as published by the Free Software Foundation; either version 3.0 of the License, or (at your option) any later version. 
 
