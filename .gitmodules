@@ -1,0 +1,3 @@
+[submodule "tools/winstall"]
+	path = tools/winstall
+	url = git@github.com:catinella/winstall.git
