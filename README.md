@@ -2,12 +2,14 @@
 
 ## 1.0 Files
 
-| Files/Dirs   | Description                           |
-|--------------|---------------------------------------|
-| images       | Pictures for RADME.md file            |
-| INSTALL.sh   | BASH script for software installation |
-| lgpl-3.0.txt | Project's licence                     |
-| src          | Project's source code                 |
+| Files/Dirs    | Description                           |
+|---------------|---------------------------------------|
+| images        | Pictures for RADME.md file            |
+| lgpl-3.0.txt  | Project's licence                     |
+| share         | Example files, icons, desktop integr. |
+| src           | Project's source code                 |
+| tools         | winstall and project's tools          |
+| winstall.conf | Installer's configuration file        |
 
 ## 2.0 Decription
 Virtual Oscilloscope is a lightweight Qt-based application for visualizing signals stored in CSV files. It provides an
