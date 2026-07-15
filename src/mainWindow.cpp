@@ -64,17 +64,20 @@ static bool _rowToVect (QVector<double> &codedRow, const QString &sourceRow) {
 	//	true    The data have been correctly converted
 	//    false   Corrupted source data
 	//
-	static const QRegularExpression regex(R"(^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$)");
-	QStringList                     fieldsList = sourceRow.split(CSVFIELDSPLITTER);
-	QString                         tmp("");
-	bool                            out = true;
-	
+	QStringList   fieldsList = sourceRow.split(CSVFIELDSPLITTER);
+	QString       tmp("");
+	bool          out = true, isNumber = false;
+	double        val = 0;
+		
 	codedRow.clear();
 	for (const QString &field : fieldsList) {
-		tmp = field.trimmed();               // Space characters removing
-		if (regex.match(field).hasMatch()) {
-			//qDebug() << field << "is a number \n";
-			codedRow.append(field.toDouble());
+		// Space characters removing
+		tmp = field.trimmed();
+		
+		isNumber = false;
+		val = tmp.toDouble(&isNumber);
+		if (isNumber) {
+			codedRow.append(val);
 		} else {
 			out = false;
 			break;
@@ -336,6 +339,9 @@ bool mainWindow::sendDataToDisplay() {
 void mainWindow::openCsv() {
 	//
 	// Description:
+	//	It reads the selected CSV file and fills the object buffer. The sendDataToDisplay() method will scale data before
+	//	to send the data to the virtual display
+	//
 	//	This is the action associated to the "open-csv" button.
 	//
 	QString fileName = QFileDialog::getOpenFileName(this, "Open CSV file", QString(), "CSV files (*.csv);;All files (*)" );
@@ -360,7 +366,7 @@ void mainWindow::openCsv() {
 			dataPool.clear();
 			channelNames.clear();
 			
-			while (in.atEnd() == false) {
+			while (in.atEnd() == false && err == false) {
 				rowString = in.readLine();
 				if (_rowToVect (csvItem, rowString)) {
 					// Dtata collecting
