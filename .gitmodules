@@ -1,3 +1,4 @@
 [submodule "tools/winstall"]
 	path = tools/winstall
 	url = https://github.com/catinella/winstall.git
+	branch = bash
